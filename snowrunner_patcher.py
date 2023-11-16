@@ -31,7 +31,7 @@ if not PATCH_PATH.lower().endswith('.zip'):
 TMP_PATH_BASE = '/tmp/snowrunner_patcher/'
 TMP_PATH_ORIG = TMP_PATH_BASE + 'orig'
 TMP_PATH_PATCH = TMP_PATH_BASE + 'patch'
-TMP_PATH_PATCH_LEN = len(os.path.split(TMP_PATH_PATCH)) + 1
+TMP_PATH_PATCH_LEN = len(os.path.split(TMP_PATH_PATCH)) + 2
 
 if not os.path.isfile(SNOWRUNNER_PATH):
     sys.exit('Could not find SnowRunner.')
