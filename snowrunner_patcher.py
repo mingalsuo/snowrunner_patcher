@@ -6,6 +6,7 @@ import os
 import sys
 import shutil
 import zipfile
+import itertools
 
 __author__ = "Markus Ingalsuo"
 __copyright__ = "Copyright 2023, Markus Ingalsuo"
@@ -29,9 +30,10 @@ if not PATCH_PATH.lower().endswith('.zip'):
     sys.exit('\n usage: python3 snowrunner_patcher.py path/to/patch.zip\n')
 
 TMP_PATH_BASE = '/tmp/snowrunner_patcher/'
-TMP_PATH_ORIG = TMP_PATH_BASE + 'orig'
-TMP_PATH_PATCH = TMP_PATH_BASE + 'patch'
-TMP_PATH_PATCH_LEN = len(os.path.split(TMP_PATH_PATCH)) + 2
+TMP_PATH_ORIG = f"{TMP_PATH_BASE}orig"
+TMP_PATH_PATCH = f"{TMP_PATH_BASE}patch"
+TMP_PATH_PATCH_ARR = os.path.split(TMP_PATH_PATCH)
+TMP_PATH_PATCH_LEN = len(TMP_PATH_PATCH_ARR) + 2
 
 if not os.path.isfile(SNOWRUNNER_PATH):
     sys.exit('Could not find SnowRunner.')
@@ -46,11 +48,13 @@ with zipfile.ZipFile(PATCH_PATH, 'r') as zip_ref:
     zip_ref.extractall(TMP_PATH_PATCH)
 
 os.chdir(TMP_PATH_PATCH)
+# use f-strings
 for root, dirs, files in os.walk(TMP_PATH_PATCH):
     for file in files:
         FILE_PATH = os.path.join(root, file)
-        DUMB_NAME = '\\'.join(FILE_PATH.split('/')[TMP_PATH_PATCH_LEN:])
-        shutil.copyfile(FILE_PATH, TMP_PATH_ORIG + '/' + DUMB_NAME)
+        FILE_PATH_ARR = FILE_PATH.split('/')[TMP_PATH_PATCH_LEN:]
+        DUMB_NAME = '\\'.join(FILE_PATH_ARR)
+        shutil.copyfile(FILE_PATH, f"{TMP_PATH_ORIG}/{DUMB_NAME}")
 
 os.chdir(TMP_PATH_ORIG)
 with zipfile.ZipFile(SNOWRUNNER_PATH, 'w') as zip_ref:
